@@ -10,12 +10,36 @@ function App(){
     fetchQuote();
   }, [])
 
-  const fetchQuote = async function(){
-    const response = await fetch('https://api.quotable.io/random');
-    const data = await response.json();
-    setQuote(data.content);
-    setAuthor(data.author);
-  }
+  const fetchQuote = async () => {
+    const apiKey = 'sT4ExKHqKF+NpxCJOBbRmg==jPBOTZf4EKbS8lhF';
+    const url = 'https://api.api-ninjas.com/v1/quotes?category=happiness';
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'X-Api-Key': apiKey,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.length > 0) {
+        setQuote(data[0].quote);
+        setAuthor(data[0].author);
+      } else {
+        setQuote('No quote found.');
+        setAuthor('');
+      }
+    } catch (error) {
+      console.error('Error fetching the quote:', error);
+      setQuote('Failed to fetch the quote. Please try again later.');
+      setAuthor('');
+    }
+  };
+
 
   return (
     <div className="App">
